@@ -8,6 +8,7 @@ pub struct Stream {
     pub token: Address,
     pub amount: i128,
     pub start_time: u64,
+    pub cliff_time: u64,
     pub end_time: u64,
     pub withdrawn_amount: i128,
 }
@@ -16,6 +17,7 @@ pub struct Stream {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum DataKey {
     Stream(u64),
-    StreamId, // Add this to track the sequence of IDs
+    StreamId,
     Admin,
+    IsPaused,
 }
