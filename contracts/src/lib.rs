@@ -4,6 +4,9 @@ pub mod math;
 mod test;
 mod types;
 
+#[cfg(test)]
+mod upgrade_test;
+
 use soroban_sdk::{contract, contractimpl, symbol_short, token, Address, Env, Vec};
 pub use types::{DataKey, Stream, StreamRequest};
 
@@ -325,5 +328,35 @@ impl StellarStream {
         env.storage()
             .persistent()
             .extend_ttl(&stream_key, THRESHOLD, LIMIT);
+    }
+
+    /// Upgrade the contract to a new WASM hash
+    /// Only the admin can perform this operation
+    pub fn upgrade(env: Env, new_wasm_hash: soroban_sdk::BytesN<32>) {
+        // Get the admin address
+        let admin: Address = env
+            .storage()
+            .instance()
+            .get(&DataKey::Admin)
+            .expect("Admin not set");
+
+        // Require admin authorization
+        admin.require_auth();
+
+        // Update the contract WASM
+        env.deployer()
+            .update_current_contract_wasm(new_wasm_hash.clone());
+
+        // Emit upgrade event with new WASM hash
+        env.events()
+            .publish((symbol_short!("upgrade"), admin), new_wasm_hash);
+    }
+
+    /// Get the current admin address
+    pub fn get_admin(env: Env) -> Address {
+        env.storage()
+            .instance()
+            .get(&DataKey::Admin)
+            .expect("Admin not set")
     }
 }
