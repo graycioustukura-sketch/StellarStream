@@ -29,13 +29,7 @@ pub fn calculate_withdrawable_amount(unlocked_amount: i128, withdrawn_amount: i1
     unlocked_amount - withdrawn_amount
 }
 
-pub fn calculate_unlocked(
-    total_amount: i128,
-    start: u64,
-    cliff: u64,
-    end: u64,
-    now: u64,
-) -> i128 {
+pub fn calculate_unlocked(total_amount: i128, start: u64, cliff: u64, end: u64, now: u64) -> i128 {
     if now < cliff {
         return 0;
     }

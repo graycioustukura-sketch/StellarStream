@@ -89,15 +89,9 @@ fn test_unauthorized_withdrawal() {
     let thief = Address::generate(&ctx.env);
 
     ctx.token.mint(&sender, &100);
-    let stream_id = ctx.client.create_stream(
-        &sender,
-        &receiver,
-        &ctx.token_id,
-        &100,
-        &0,
-        &50,
-        &100,
-    );
+    let stream_id =
+        ctx.client
+            .create_stream(&sender, &receiver, &ctx.token_id, &100, &0, &50, &100);
 
     ctx.client.withdraw(&stream_id, &thief);
 }
@@ -110,15 +104,9 @@ fn test_cancellation_split() {
     let amount = 1000_i128;
 
     ctx.token.mint(&sender, &amount);
-    let stream_id = ctx.client.create_stream(
-        &sender,
-        &receiver,
-        &ctx.token_id,
-        &amount,
-        &0,
-        &100,
-        &1000,
-    );
+    let stream_id =
+        ctx.client
+            .create_stream(&sender, &receiver, &ctx.token_id, &amount, &0, &100, &1000);
 
     // Jump to 25% (250 seconds in)
     ctx.env.ledger().set(soroban_sdk::testutils::LedgerInfo {
@@ -147,15 +135,9 @@ fn test_cliff_blocks_withdrawal() {
     let receiver = Address::generate(&ctx.env);
 
     ctx.token.mint(&sender, &1000);
-    let stream_id = ctx.client.create_stream(
-        &sender,
-        &receiver,
-        &ctx.token_id,
-        &1000,
-        &0,
-        &500,
-        &1000,
-    );
+    let stream_id =
+        ctx.client
+            .create_stream(&sender, &receiver, &ctx.token_id, &1000, &0, &500, &1000);
 
     ctx.env.ledger().set(soroban_sdk::testutils::LedgerInfo {
         timestamp: 250,
@@ -178,15 +160,9 @@ fn test_cliff_unlocks_at_cliff_time() {
     let receiver = Address::generate(&ctx.env);
 
     ctx.token.mint(&sender, &1000);
-    let stream_id = ctx.client.create_stream(
-        &sender,
-        &receiver,
-        &ctx.token_id,
-        &1000,
-        &0,
-        &500,
-        &1000,
-    );
+    let stream_id =
+        ctx.client
+            .create_stream(&sender, &receiver, &ctx.token_id, &1000, &0, &500, &1000);
 
     ctx.env.ledger().set(soroban_sdk::testutils::LedgerInfo {
         timestamp: 500,
@@ -211,13 +187,6 @@ fn test_invalid_cliff_time() {
     let receiver = Address::generate(&ctx.env);
 
     ctx.token.mint(&sender, &1000);
-    ctx.client.create_stream(
-        &sender,
-        &receiver,
-        &ctx.token_id,
-        &1000,
-        &100,
-        &50,
-        &200,
-    );
+    ctx.client
+        .create_stream(&sender, &receiver, &ctx.token_id, &1000, &100, &50, &200);
 }
