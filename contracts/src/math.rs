@@ -109,6 +109,7 @@ pub fn calculate_withdrawable(
 
 /// Calculate fee based on basis points (bps)
 /// fee_bps is in hundredths of a percent (100 bps = 1%)
+#[allow(dead_code)]
 pub fn calculate_fee(amount: i128, fee_bps: u32) -> i128 {
     if fee_bps == 0 || amount <= 0 {
         return 0;
