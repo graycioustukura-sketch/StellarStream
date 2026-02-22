@@ -12,7 +12,7 @@ use errors::Error;
 use soroban_sdk::{contract, contractimpl, symbol_short, token, Address, Bytes, Env, IntoVal, Vec};
 use storage::{FLASH_LOAN_FEE, FLASH_LOAN_LOCK, PROPOSAL_COUNT, RECEIPT, STREAM_COUNT};
 use types::{
-    DataKey, Milestone, ProposalApprovedEvent, ProposalCreatedEvent, ReceiptMetadata,
+    CurveType, DataKey, Milestone, ProposalApprovedEvent, ProposalCreatedEvent, ReceiptMetadata,
     ReceiptTransferredEvent, Role, Stream, StreamCancelledEvent, StreamClaimEvent,
     StreamCreatedEvent, StreamPausedEvent, StreamProposal, StreamReceipt, StreamUnpausedEvent,
 };

@@ -15,6 +15,14 @@ pub const INTEREST_SPLIT_SENDER_RECEIVER: u32 = 0b011; // 3: 50/50 sender/receiv
 #[allow(dead_code)]
 pub const INTEREST_SPLIT_ALL: u32 = 0b111; // 7: 33/33/33 split
 
+// Curve types for vesting schedules
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum CurveType {
+    Linear = 0,
+    Exponential = 1,
+}
+
 // Role definitions for RBAC
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
