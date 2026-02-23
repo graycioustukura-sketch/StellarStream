@@ -83,6 +83,13 @@ pub struct Stream {
     pub oracle_max_staleness: u64,
     pub price_min: i128,
     pub price_max: i128,
+    /// If true, this stream is permanently locked to the original receiver.
+    /// The receiver cannot be transferred for any reason. Used for identity-based
+    /// rewards, grants, or compliance-locked distributions.
+    /// Default: false (for backward compatibility with existing streams)
+    /// Note: We use bool instead of Option<bool> to avoid storage overhead and
+    /// ensure explicit default behavior. All existing streams default to false.
+    pub is_soulbound: bool,
 }
 
 // Legacy Stream struct (v1) - for migration example
@@ -137,6 +144,7 @@ pub enum DataKey {
     ContractVersion,        // Tracks current contract version
     MigrationExecuted(u32), // Tracks which migrations have been executed
     Role(Address, Role),    // RBAC: stores role assignments
+    SoulboundStreams,       // Vec<u64> of all soulbound stream IDs
 }
 
 #[contracttype]
@@ -239,4 +247,52 @@ pub struct ReceiptMetadata {
     pub unlocked_balance: i128,
     pub total_amount: i128,
     pub token: Address,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum RequestStatus {
+    Pending,
+    Approved,
+    Rejected,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ContributorRequest {
+    pub id: u64,
+    pub receiver: Address,
+    pub token: Address,
+    pub total_amount: i128,
+    pub duration: u64,
+    pub start_time: u64,
+    pub status: RequestStatus,
+    pub metadata: Option<BytesN<32>>,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum RequestKey {
+    Request(u64),
+    RequestCount,
+}
+
+#[contracttype]
+#[derive(Clone, Debug)]
+pub struct RequestCreatedEvent {
+    pub request_id: u64,
+    pub receiver: Address,
+    pub token: Address,
+    pub total_amount: i128,
+    pub duration: u64,
+    pub timestamp: u64,
+}
+
+#[contracttype]
+#[derive(Clone, Debug)]
+pub struct RequestExecutedEvent {
+    pub request_id: u64,
+    pub stream_id: u64,
+    pub executor: Address,
+    pub timestamp: u64,
 }

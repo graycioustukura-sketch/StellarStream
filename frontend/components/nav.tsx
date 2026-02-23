@@ -4,6 +4,7 @@
  * components/nav.tsx
  * Modified for Issue #161 — Easter Egg: "The Stream Matrix"
  * Added: 5-click logo trigger to activate StreamMatrix component
+ * Preserved: NetworkStatusOrb from main branch
  */
 
 import { useState, useCallback } from "react";
@@ -11,6 +12,7 @@ import Link from "next/link";
 import { useWallet } from "@/lib/wallet-context";
 import { WalletConnectModal } from "./wallet-connect-modal";
 import { StreamMatrix } from "./stream-matrix";
+import NetworkStatusOrb from "./networkstatusorb";
 import { Wallet, ChevronDown } from "lucide-react";
 
 const navLinks = [
@@ -20,19 +22,16 @@ const navLinks = [
   { href: "#FAQ",          label: "FAQ" },
 ];
 
-// How many clicks to trigger the Easter egg
 const TRIGGER_CLICKS = 5;
 
 export function Nav() {
   const { isConnected, address, openModal } = useWallet();
 
-  // ── Easter egg state ──
   const [clickCount, setClickCount]     = useState(0);
   const [matrixActive, setMatrixActive] = useState(false);
 
   const handleLogoClick = useCallback(
     (e: React.MouseEvent) => {
-      // Only intercept on non-href navigation (same page)
       const next = clickCount + 1;
       setClickCount(next);
       if (next >= TRIGGER_CLICKS) {
@@ -55,7 +54,6 @@ export function Nav() {
 
   return (
     <>
-      {/* ── Stream Matrix Easter Egg ── */}
       <StreamMatrix active={matrixActive} onClose={handleMatrixClose} />
 
       <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[60%] max-w-7xl z-50">
@@ -70,7 +68,6 @@ export function Nav() {
             <span
               className="text-white font-bold tracking-tighter text-lg transition-all duration-150"
               style={{
-                // Subtle glow hint as clicks accumulate
                 textShadow:
                   clickCount > 0
                     ? `0 0 ${clickCount * 4}px rgba(0,245,255,${clickCount * 0.15})`
@@ -95,6 +92,11 @@ export function Nav() {
               </li>
             ))}
           </ul>
+
+          {/* Network status orb (desktop only) */}
+          <div className="hidden md:flex items-center mr-6">
+            <NetworkStatusOrb congestionLevel={0.2} averageFee={0.001} size={16} />
+          </div>
 
           {/* Wallet Connection Button */}
           {isConnected ? (
@@ -124,7 +126,6 @@ export function Nav() {
         </div>
       </nav>
 
-      {/* Wallet Connect Modal */}
       <WalletConnectModal />
     </>
   );
